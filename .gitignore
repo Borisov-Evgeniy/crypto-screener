@@ -1,0 +1,73 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ==========================
+# Virtual environment
+# ==========================
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# ==========================
+# IDE / Editors
+# ==========================
+.vscode/
+.idea/
+*.iml
+
+# ==========================
+# Logs & temp files
+# ==========================
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.sqlite
+
+# ==========================
+# OS generated files
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Django
+# ==========================
+*.mo
+*.pot
+local_settings.py
+media/
+staticfiles/
+
+# ==========================
+# Flask / FastAPI
+# ==========================
+instance/
+*.pid
+
+# ==========================
+# Environments & secrets
+# ==========================
+.env
+*.env
+.env.*
+secrets.json
+
+# ==========================
+# Jupyter Notebook
+# ==========================
+.ipynb_checkpoints
