@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./backend
+    build: .
     container_name: crypto_backend
     restart: always
     ports:
