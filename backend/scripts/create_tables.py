@@ -1,4 +1,4 @@
-from backend.app.db.session import engine
+from backend.app.core.database import engine
 from backend.app.models import user
 
 def run():
