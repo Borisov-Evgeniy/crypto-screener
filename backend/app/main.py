@@ -1,14 +1,13 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.core.database import init_db
-from backend.app.models.user import User
-
+from starlette.middleware.cors import CORSMiddleware
+from backend.app.db.session import get_db
 
 app = FastAPI(title='Crypto screener API')
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # в проде - конкретные домены
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

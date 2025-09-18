@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from backend.app.models.user import Base
-from backend.repositories.user_repositories import UserRepository
+from backend.app.repositories.user_repositories import UserRepository
 
 load_dotenv()
 

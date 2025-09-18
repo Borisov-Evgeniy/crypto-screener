@@ -1,5 +1,5 @@
 import pytest
-from backend.repositories.user_repositories import InvalidPasswordError
+from backend.app.repositories.user_repositories import InvalidPasswordError
 
 # тесты используют фикстуру user_repo из conftest.py
 
