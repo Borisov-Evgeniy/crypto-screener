@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.core.deps import get_db
+from backend.app.core.database import init_db
 from backend.app.models.user import User
 
 

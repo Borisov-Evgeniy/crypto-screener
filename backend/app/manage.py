@@ -29,7 +29,7 @@ def runserver(host: str = "0.0.0.0", port: int = 8000, reload: bool = True):
     ]
     if reload:
         cmd.append("--reload")
-    # check=True чтобы получить non-zero exit из subprocess в случае ошибок
+    # check=True чтобы получить non-zero exit в случае ошибок
     subprocess.run(cmd, check=True)
 
 @app.command("alembic-upgrade")

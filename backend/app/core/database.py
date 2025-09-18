@@ -1,4 +1,3 @@
-# backend/app/core/database.py
 import asyncio
 from backend.app.db.session import engine, Base
 
