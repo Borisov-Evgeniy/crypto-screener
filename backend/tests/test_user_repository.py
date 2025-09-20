@@ -1,42 +1,31 @@
 import pytest
-from backend.app.repositories.user_repositories import InvalidPasswordError
-
-# тесты используют фикстуру user_repo из conftest.py
+from backend.app.models.user import User
 
 @pytest.mark.asyncio
-async def test_create_user(user_repo):
-    user = await user_repo.create_user("test@example.com", "password123")
-    assert user.id is not None
-    assert user.email == "test@example.com"
-    assert user.hashed_password != "password123"
+async def test_create_and_get_user(user_repository):
+    user = await user_repository.create_user("test@example.com", "hashedpass")
+    fetched = await user_repository.get_user_by_id(user.id)
+    assert fetched.email == "test@example.com"
+    assert fetched.hashed_password == "hashedpass"
+
 
 @pytest.mark.asyncio
-async def test_get_user_by_email(user_repo):
-    await user_repo.create_user("findme@example.com", "123")
-    user = await user_repo.get_user_by_email("findme@example.com")
-    assert user is not None
-    assert user.email == "findme@example.com"
-
-@pytest.mark.asyncio
-async def test_verify_password_user_correct(user_repo):
-    await user_repo.create_user("auth@example.com", "secret")
-    result = await user_repo.verify_password_user("auth@example.com", "secret")
-    assert result is True
-
-@pytest.mark.asyncio
-async def test_verify_password_user_invalid(user_repo):
-    await user_repo.create_user("auth2@example.com", "secret")
-    with pytest.raises(InvalidPasswordError):
-        await user_repo.verify_password_user("auth2@example.com", "wrong")
-
-@pytest.mark.asyncio
-async def test_update_user_email(user_repo):
-    user = await user_repo.create_user("old@example.com", "pass")
-    updated = await user_repo.update_user_email(user.id, "new@example.com")
+async def test_update_user_email(user_repository):
+    user = await user_repository.create_user("old@example.com", "hashedpass")
+    updated = await user_repository.update_user_email(user.id, "new@example.com")
     assert updated.email == "new@example.com"
 
+
 @pytest.mark.asyncio
-async def test_change_user_status(user_repo):
-    user = await user_repo.create_user("status@example.com", "pass")
-    result = await user_repo.change_user_status(user.id, False)
-    assert "deactivated" in result
+async def test_change_user_status(user_repository):
+    user = await user_repository.create_user("status@example.com", "hashedpass")
+    updated = await user_repository.change_user_status(user.id, False)
+    assert updated.is_active is False
+
+
+@pytest.mark.asyncio
+async def test_delete_user(user_repository):
+    user = await user_repository.create_user("delete@example.com", "hashedpass")
+    await user_repository.delete_user(user.id)
+    deleted = await user_repository.get_user_by_id(user.id)
+    assert deleted is None

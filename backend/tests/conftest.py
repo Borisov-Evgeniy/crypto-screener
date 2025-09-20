@@ -1,16 +1,19 @@
 import os
-import pytest
+import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
+
 from backend.app.models.user import Base
 from backend.app.repositories.user_repositories import UserRepository
+from backend.app.services.user_service import UserService
 
 load_dotenv()
 
 DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("TEST_DATABASE_URL is not set in .env")
+
 
 class DatabaseFixture:
     def __init__(self, database_url: str):
@@ -21,16 +24,12 @@ class DatabaseFixture:
         self.session: AsyncSession | None = None
 
     async def setup_table(self):
-        # Создаём таблицы (если нужно — можно сначала дропнуть)
         async with self.engine.begin() as conn:
-            # безопасно: создаст таблицы, если их нет
             await conn.run_sync(Base.metadata.create_all)
-        # создаём сессию (экземпляр AsyncSession)
         self.session = self.async_session()
         return self
 
     async def teardown(self):
-        # корректно закрываем сессию и роняем таблицы
         if self.session:
             await self.session.close()
             self.session = None
@@ -44,15 +43,12 @@ class DatabaseFixture:
         return self.session
 
     def get_user_repo(self) -> UserRepository:
-        return UserRepository(self.get_session()) # Возвращаем репозиторий, используя текущую сессию
+        return UserRepository(self.get_session())
 
+# --- фикстуры --- #
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def db():
-    """
-    Сессия и временная схема для тестов.
-    Для доступа к сессии db.get_session().
-    """
     d = DatabaseFixture(DATABASE_URL)
     await d.setup_table()
     try:
@@ -60,10 +56,12 @@ async def db():
     finally:
         await d.teardown()
 
-
-@pytest.fixture
-async def user_repo(db):
-    """
-    Фикстура, возвращающая  UserRepository, привязанный к тестовой базе.
-    """
+@pytest_asyncio.fixture
+async def user_repository(db):
     yield db.get_user_repo()
+
+@pytest_asyncio.fixture
+async def user_service(db):
+    repo = db.get_user_repo()
+    service = UserService(repo)
+    yield service

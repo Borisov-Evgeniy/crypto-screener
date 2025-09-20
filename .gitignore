@@ -72,3 +72,4 @@ secrets.json
 # Jupyter Notebook
 # ==========================
 .ipynb_checkpoints
+.tree_scrypt.py
