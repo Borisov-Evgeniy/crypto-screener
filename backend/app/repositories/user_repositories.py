@@ -3,6 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from backend.app.models.user import User
 
+class InvalidPasswordError:
+    pass
+
+class UserNotFoundError:
+    pass
 
 class UserRepository:
     def __init__(self, session: AsyncSession):

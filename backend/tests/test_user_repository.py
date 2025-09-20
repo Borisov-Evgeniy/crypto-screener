@@ -1,5 +1,6 @@
 import pytest
 from backend.app.models.user import User
+from backend.app.repositories.user_repositories import InvalidPasswordError,UserNotFoundError
 
 @pytest.mark.asyncio
 async def test_create_and_get_user(user_repository):
@@ -8,6 +9,17 @@ async def test_create_and_get_user(user_repository):
     assert fetched.email == "test@example.com"
     assert fetched.hashed_password == "hashedpass"
 
+@pytest.mark.asyncio
+async def test_get_user_by_id(user_repository):
+    created = await user_repository.create_user("byid@example.com", "123")
+    user = await user_repository.get_user_by_id(created.id)
+    assert user is not None
+    assert user.id == created.id
+
+@pytest.mark.asyncio
+async def test_get_user_by_id_not_found(user_repository):
+    user = await user_repository.get_user_by_id(9999)
+    assert user is None
 
 @pytest.mark.asyncio
 async def test_update_user_email(user_repository):
@@ -15,6 +27,16 @@ async def test_update_user_email(user_repository):
     updated = await user_repository.update_user_email(user.id, "new@example.com")
     assert updated.email == "new@example.com"
 
+@pytest.mark.asyncio
+async def test_duplicate_email(user_repository):
+    await user_repository.create_user("dupe@example.com", "pass")
+    with pytest.raises(Exception):
+        await user_repository.create_user("dupe@example.com", "other")
+
+@pytest.mark.asyncio
+async def test_get_user_by_email_not_found(user_repository):
+    user = await user_repository.get_user_by_email("missing@example.com")
+    assert user is None
 
 @pytest.mark.asyncio
 async def test_change_user_status(user_repository):
