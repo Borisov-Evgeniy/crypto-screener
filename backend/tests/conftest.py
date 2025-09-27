@@ -65,3 +65,7 @@ async def user_service(db):
     repo = db.get_user_repo()
     service = UserService(repo)
     yield service
+
+@pytest_asyncio.fixture
+def sample_password():
+    return "super_secret123"
